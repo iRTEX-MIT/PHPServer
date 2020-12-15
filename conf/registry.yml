@@ -1,0 +1,15 @@
+service:
+  name: Cardboard
+
+cdn:
+  tailwind: https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css
+
+ui:
+  404:
+    code: 404
+    title: "Sorry we couldn't find this page"
+    desc: "But dont worry, you can find plenty of other things on our homepage"
+
+  noindex:
+    title: "Let's start with a clean slate"
+    desc: "Create an index.html page inside your public directory so that you can see it as your home page"

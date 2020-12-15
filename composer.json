@@ -1,0 +1,19 @@
+{
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "msl",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "sekjun9878/request-parser": "~1.0",
+    "ext-sockets": "*",
+    "codedungeon/php-cli-colors": "~1.0",
+    "nette/neon": "^3.2",
+    "twig/twig": "^2.0",
+    "ext-fileinfo": "*"
+  }
+}

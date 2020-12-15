@@ -1,0 +1,8 @@
+# How to use
+# var: value
+#
+# Example:
+# Hello: world
+#
+# You can use it in HTML template as {{app.Hello}}
+# Output: world
