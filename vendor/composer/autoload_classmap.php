@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Mobile_Detect' => $vendorDir . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     'Nette\\Neon\\Decoder' => $vendorDir . '/nette/neon/src/Neon/Decoder.php',
     'Nette\\Neon\\Encoder' => $vendorDir . '/nette/neon/src/Neon/Encoder.php',
     'Nette\\Neon\\Entity' => $vendorDir . '/nette/neon/src/Neon/Entity.php',

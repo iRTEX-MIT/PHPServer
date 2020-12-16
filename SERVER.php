@@ -1,32 +1,43 @@
 <?php
 
-use Codedungeon\PHPCliColors\Color;
-use Nette\Neon\Neon;
+use Monolog\Handler\FirePHPHandler;
+use Monolog\Handler\PHPConsoleHandler;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 global $cb_route;
-global $cb_registry;
-global $cb_app;
-global $config;
 global $twig;
+global $log;
+global $config;
 
 include_once "vendor/autoload.php";
+include_once "Bin/Config.php";
 include_once "Bin/Headers.php";
 include_once "Bin/Router.php";
 include_once "Bin/Server.php";
 
 set_time_limit(0);
 
-$twig = new \Twig\Environment(new \Twig\Loader\ArrayLoader([]));
+$log = new Logger('Main');
 
-$config = (object) Neon::decode((string) file_get_contents('./conf/config.yml'));
-$cb_registry = (object) Neon::decode((string) file_get_contents('./conf/registry.yml'));
-$cb_app = (object) Neon::decode((string) file_get_contents('./conf/app.yml'));
-$cb_route = (object) Neon::decode((string) file_get_contents('./conf/route.yml'));
+$log->pushHandler(new StreamHandler('logger.log'));
+$log->pushHandler(new FirePHPHandler());
+$log->pushHandler(new PHPConsoleHandler());
 
-echo Color::GREEN, Color::BOLD, "The Cardboard server has successfully started up", Color::RESET, PHP_EOL;
-echo Color::WHITE, Color::BOLD, "URL: http://{$config->server['ip']}:{$config->server['port']}", Color::RESET, PHP_EOL;
-echo Color::WHITE, Color::BOLD, "IP: {$config->server['ip']}", Color::RESET, PHP_EOL;
-echo Color::WHITE, Color::BOLD, "PORT: {$config->server['port']}", Color::RESET, PHP_EOL;
+set_exception_handler(function ($exception) {
+    global $log;
+    $log->warning($exception->getMessage());
+});
 
-$SERVER = new Server($config->server['ip'], $config->server['port']);
-$SERVER->listen();
+set_error_handler(function ($errno, $errstr,  $errfile, $errline, $errcontext) {
+    global $log;
+    $log->error($errstr);
+});
+
+
+$twig   = new \Twig\Environment(new \Twig\Loader\ArrayLoader([]));
+$config = new Config();
+
+$SERVER = new Server($config->config['server']['ip'], $config->config['server']['port']);
+
+echo $SERVER->listen();

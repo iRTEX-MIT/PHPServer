@@ -7,8 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit7418886a1bf26f2e337714bec90262ef
 {
     public static $files = array (
+        '04c6c5c2f7095ccf6c481d3e53e1776f' => __DIR__ . '/..' . '/mustangostang/spyc/Spyc.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'de5126de2484f38e4c50061bcb11afa7' => __DIR__ . '/..' . '/clausnz/php-helpers/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -25,9 +27,23 @@ class ComposerStaticInit7418886a1bf26f2e337714bec90262ef
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
         ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+            'PhpConsole\\' => 11,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
+        'J' => 
+        array (
+            'Jaybizzle\\CrawlerDetect\\' => 24,
+        ),
         'C' => 
         array (
             'Codedungeon\\PHPCliColors\\' => 25,
+            'CNZ\\Helpers\\' => 12,
         ),
     );
 
@@ -48,9 +64,29 @@ class ComposerStaticInit7418886a1bf26f2e337714bec90262ef
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'PhpConsole\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-console/php-console/src/PhpConsole',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Jaybizzle\\CrawlerDetect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
+        ),
         'Codedungeon\\PHPCliColors\\' => 
         array (
             0 => __DIR__ . '/..' . '/codedungeon/php-cli-colors/src',
+        ),
+        'CNZ\\Helpers\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/clausnz/php-helpers/src/Helpers',
         ),
     );
 
@@ -62,9 +98,17 @@ class ComposerStaticInit7418886a1bf26f2e337714bec90262ef
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
+        'D' => 
+        array (
+            'Detection' => 
+            array (
+                0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced',
+            ),
+        ),
     );
 
     public static $classMap = array (
+        'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'Nette\\Neon\\Decoder' => __DIR__ . '/..' . '/nette/neon/src/Neon/Decoder.php',
         'Nette\\Neon\\Encoder' => __DIR__ . '/..' . '/nette/neon/src/Neon/Encoder.php',
         'Nette\\Neon\\Entity' => __DIR__ . '/..' . '/nette/neon/src/Neon/Entity.php',

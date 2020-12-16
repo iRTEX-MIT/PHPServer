@@ -4,3 +4,4 @@
 # Example:
 # /login: .temp.html
 
+/user: /.templates/User/index.html

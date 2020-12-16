@@ -40,13 +40,21 @@ class Server
         $this->port = $port;
 
         $this->socket = socket_create(self::SOCKET_DOMAIN, self::SOCKET_TYPE, 0);
-        socket_bind($this->socket, $this->ip, $this->port) or new Exception("The address is already in use - {$this->ip}:{$this->port}");
 
         $this->router = new Router();
 
     }
 
     public function listen () {
+
+        if (!socket_bind($this->socket, $this->ip, $this->port)) {
+            return new Exception("The address is already in use - {$this->ip}:{$this->port}");
+        }
+
+        echo "[SERVER] ", Color::GREEN, Color::BOLD, "The Cardboard server has successfully started up", Color::RESET, PHP_EOL;
+        echo "[SERVER] ", Color::WHITE, Color::BOLD, "URL: http://{$this->ip}:{$this->port}", Color::RESET, PHP_EOL;
+        echo "\n";
+        echo Color::GRAY, Color::BOLD, "CONNECTION HISTORY:", Color::RESET, PHP_EOL;
 
         while(1)
         {
@@ -84,7 +92,15 @@ class Server
 
                     if ($this->router->isFile($route)) {
 
-                        if ($filetype == 'text/html') {
+                        if (pathinfo($route)['extension'] == 'php') {
+                            $content = $this->router->getExecutePHP($route);
+
+                            if (is_array($content)) {
+                                $content = $this->router->getExecError('', '', '');
+                                $filetype = 'text/html';
+                            }
+
+                        } elseif ($filetype == 'text/html') {
                             $content = $this->router->getHTML($route);
                         } else {
                             $content = $this->router->getContentOfFile($route);
@@ -94,8 +110,22 @@ class Server
 
                     } elseif ($this->router->isDir($route)) {
 
-                        $content = $this->router->getFilesList($route);
-                        $headers = new Headers(200, "OK", strlen($content), $filetype);
+                        if ($this->router->isFile("{$route}/index.html")) {
+
+                            $content = $this->router->getHTML("{$route}/index.html");
+                            $headers = new Headers(200, "OK", strlen($content), $filetype);
+
+                        } else {
+
+                            $content = $this->router->getFilesList($route);
+                            $headers = new Headers(200, "OK", strlen($content), $filetype);
+
+                        }
+
+                    } elseif ($this->router->isRoute($request->getPath()) and !$this->router->isFile($route)) {
+
+                        $content = $this->router->getErrorRoute($request->getPath(), $this->router->getRouteEndpoint($request->getPath()));
+                        $headers = new Headers(404, "Not Found", strlen($content), $filetype);
 
                     } else {
 
@@ -106,9 +136,24 @@ class Server
 
                 }
 
-                $document = "{$headers->get()} {$content}";
+                $document = "{$headers->getHeaders()} {$content}";
 
-                echo Color::WHITE, Color::BOLD, "[{$request->getMethod()} {$this->router->contentType($route)}] {$request->getPath()}", Color::RESET, PHP_EOL;
+                $ctl_time = Color::GRAY . Color::BOLD . $request->getStartTime() . Color::RESET;
+                $ctl_route_way = "";
+
+                if ($this->router->isRoute($request->getPath())) {
+                    $ctl_route_way = Color::GRAY . "-> " . $this->router->getRouteEndpoint($request->getPath()) . Color::RESET;
+                }
+
+                if ($headers->getCode() == 200) {
+                    $cli_file = Color::GREEN . Color::BOLD . $request->getPath() . Color::RESET;
+                } elseif ($headers->getCode() == 404) {
+                    $cli_file = Color::RED . Color::BOLD . $request->getPath() . Color::RESET;
+                } else {
+                    $cli_file = Color::YELLOW . Color::BOLD . $request->getPath() . Color::RESET;
+                }
+
+                print ("{$ctl_time} [{$request->getMethod()}] {$cli_file} {$ctl_route_way}\n");
 
                 socket_write($this->client, $document, strlen($document));
                 socket_close($this->client);

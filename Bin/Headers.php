@@ -29,11 +29,43 @@ class Headers
     }
 
 
-    public function get () {
+    public function getHeaders () {
         return "HTTP/1.1 {$this->code} {$this->status} \r\n" .
         "Date: Fri, 31 Dec 1999 23:59:59 GMT \r\n" .
         "Content-Length: {$this->len} \r\n" .
         "Content-Type: {$this->content_type} \r\n\r\n";
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getLen()
+    {
+        return $this->len;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getContentType()
+    {
+        return $this->content_type;
     }
 
 

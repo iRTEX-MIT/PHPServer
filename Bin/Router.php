@@ -1,5 +1,9 @@
 <?php
 
+use CNZ\Helpers\Dev as HDev;
+use CNZ\Helpers\Arr as HArr;
+use CNZ\Helpers\Util as HUtil;
+use CNZ\Helpers\Yml as HYml;
 
 class Router
 {
@@ -32,6 +36,21 @@ class Router
             return $this->HTMLTemplate(file_get_contents('.source/HTML/404.html'));
         } else {
             return "Error: 404";
+        }
+
+    }
+
+
+    public function getErrorRoute ($from, $to)
+    {
+
+        if (file_exists('.source/HTML/route-error.html')) {
+            return $this->HTMLTemplate(file_get_contents('.source/HTML/route-error.html'), [
+                'from' => $from,
+                'to' => $to
+            ]);
+        } else {
+            return "Error: Route $from -> $to is break";
         }
 
     }
@@ -69,6 +88,23 @@ class Router
 
         } else {
             return "Error: index page not found";
+        }
+
+    }
+
+    public function getExecError ($title, $desc, $file)
+    {
+
+        if (file_exists('.source/HTML/exec-error.html')) {
+
+            return $this->HTMLTemplate(file_get_contents('.source/HTML/exec-error.html'), [
+                'title' => $title,
+                'desc' => $desc,
+                'file' => $file
+            ]);
+
+        } else {
+            return "Error: $title\n$desc\n$file";
         }
 
     }
@@ -112,21 +148,20 @@ class Router
     public function HTMLTemplate ($html, $options = []) {
 
         global $twig;
-        global $cb_registry;
-        global $cb_app;
+        global $config;
 
         return $twig->createTemplate($html)->render([
-            'cbr' => $cb_registry,
-            'app' => $cb_app,
+            'cbr' => $config->registry,
+            'app' => $config->app,
             'e' => $options
         ]);
     }
 
     public function route ($path) {
 
-        global $cb_route;
+        global $config;
 
-        $cb_route_array = (array) $cb_route;
+        $cb_route_array = (array) $config->route;
 
         if (isset($cb_route_array[$path])) {
             return $cb_route_array[$path];
@@ -135,5 +170,54 @@ class Router
         }
 
     }
+
+    public function isRoute ($path) {
+
+        global $config;
+        $cb_route_array = (array) $config->route;
+        return isset($cb_route_array[$path]);
+
+    }
+
+    public function getRouteEndpoint ($path) {
+
+        global $config;
+        $cb_route_array = (array) $config->route;
+
+        if (isset($cb_route_array[$path])) {
+            return $cb_route_array[$path];
+        } else {
+            return false;
+        }
+
+    }
+
+    public function getExecutePHP ($path) {
+
+        if (file_exists("{$this->path}/{$path}")) {
+
+            try {
+
+                $code = false;
+
+                $out = shell_exec("php {$this->path}/{$path}");
+
+                if ($code) {
+                    return [];
+                } else {
+                    return $out;
+                }
+
+            } catch (Exception $e) {
+                return [];
+            }
+
+        } else {
+            return false;
+        }
+
+    }
+
+
 
 }
