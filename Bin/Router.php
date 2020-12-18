@@ -10,6 +10,8 @@ class Router
 
     protected $path;
 
+    private $template_url;
+
     /**
      * PHP 5 allows developers to declare constructor methods for classes.
      * Classes which have a constructor method call this method on each newly-created object,
@@ -33,13 +35,12 @@ class Router
         if ($this->isFile('/404.html')) {
             return $this->getHTML('/404.html');
         } else if (file_exists('.source/HTML/404.html')) {
-            return $this->HTMLTemplate(file_get_contents('.source/HTML/404.html'));
+            return $this->getHTML('.source/HTML/404.html');
         } else {
             return "Error: 404";
         }
 
     }
-
 
     public function getErrorRoute ($from, $to)
     {
@@ -139,6 +140,7 @@ class Router
     public function getHTML ($file) {
 
         if ($this->isFile($file)) {
+            $this->template_url = $file;
             return $this->HTMLTemplate($this->getContentOfFile($file));
         } else {
             return false;
@@ -153,7 +155,11 @@ class Router
         return $twig->createTemplate($html)->render([
             'cbr' => $config->registry,
             'app' => $config->app,
-            'e' => $options
+            'e' => $options,
+            'Helpers' => [
+                'relative_path' => dir($this->template_url),
+                'file_path' => $this->template_url
+            ]
         ]);
     }
 
